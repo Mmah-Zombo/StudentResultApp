@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:student_result_app/data/db/database_helper.dart'; // Import the DatabaseHelper
+import 'package:student_result_app/screens/lecturer_dashboard.dart';
 import 'package:student_result_app/screens/signup_screen.dart';
 import 'package:student_result_app/screens/student_dashboard.dart';
 
@@ -23,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final dbHelper = DatabaseHelper();
       final user = await dbHelper.loginUser(email, password);
 
-      if (user != null) {
+      if (user != null && user['role'] == 'Student') {
         // Navigate to the Student Dashboard on success
         Navigator.pushReplacement(
           context,
@@ -33,6 +34,17 @@ class _LoginScreenState extends State<LoginScreen> {
               userName: user['name'],
               studentId: user['id'].toString(),
               studentClass: user['class'], // Replace with actual column
+            ),
+          ),
+        );
+      } else if (user != null && user['role'] == 'Lecturer') {
+        // Navigate to the Student Dashboard on success
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LecturerDashboard(
+              lecturerName: user['name'],
+              lecturerEmail: user['email'],
             ),
           ),
         );
