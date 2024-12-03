@@ -15,20 +15,19 @@ class DatabaseHelper {
     return _database!;
   }
 
-  // Future<void> deleteDatabaseFile() async {
-  //   final dbPath = await getDatabasesPath();
-  //   final path = join(dbPath, 'auth_app.db');
-  //   await deleteDatabase(path);
-  //   print('Database deleted.');
-  // }
-
   Future<Database> _initDatabase() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'auth_app.db');
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2, // Incremented version for migration
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          // Add `studentId` column for students
+          await db.execute("ALTER TABLE users ADD COLUMN studentId BIGINT");
+        }
+      },
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE users(
@@ -37,7 +36,8 @@ class DatabaseHelper {
           email TEXT UNIQUE,
           password TEXT,
           role TEXT,
-          class TEXT
+          class TEXT,
+          studentId BIGINT
         )
         ''');
       },
@@ -45,7 +45,7 @@ class DatabaseHelper {
   }
 
   Future<int> registerUser(String name, String email, String password,
-      String role, String userClass) async {
+      String role, String userClass, String? studentId) async {
     final db = await database;
     try {
       return await db.insert('users', {
@@ -54,6 +54,8 @@ class DatabaseHelper {
         'password': password,
         'role': role,
         'class': userClass,
+        'studentId':
+            role == 'Student' ? studentId : null, // Only set for students
       });
     } catch (e) {
       if (e is DatabaseException && e.isUniqueConstraintError()) {

@@ -15,6 +15,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final _passwordController = TextEditingController();
   final _classController =
       TextEditingController(); // Controller for student class
+  final _studentIdController =
+      TextEditingController(); // Controller for student ID
   String _role = 'Student'; // Default role
 
   void _register() async {
@@ -25,12 +27,21 @@ class _SignupScreenState extends State<SignupScreen> {
       final role = _role;
       final studentClass =
           _role == 'Student' ? _classController.text.trim() : 'N/A';
+      final studentId =
+          _role == 'Student' ? _studentIdController.text.trim() : null;
 
       final dbHelper = DatabaseHelper();
 
       try {
         // Attempt to register the user
-        await dbHelper.registerUser(name, email, password, role, studentClass);
+        await dbHelper.registerUser(
+          name,
+          email,
+          password,
+          role,
+          studentClass,
+          studentId,
+        );
 
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
@@ -53,97 +64,126 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Sign Up')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              // Full Name Field
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Full Name'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-
-              // Email Field
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Please enter a valid email address';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-
-              // Password Field
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Password'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.length < 6) {
-                    return 'Password must be at least 6 characters';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-
-              // Role Dropdown
-              DropdownButtonFormField(
-                value: _role,
-                items: const [
-                  DropdownMenuItem(value: 'Student', child: Text('Student')),
-                  DropdownMenuItem(value: 'Lecturer', child: Text('Lecturer')),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _role = value as String;
-                    if (_role == 'Lecturer') {
-                      _classController
-                          .clear(); // Clear class input for lecturers
-                    }
-                  });
-                },
-                decoration: const InputDecoration(labelText: 'Role'),
-              ),
-              const SizedBox(height: 10),
-
-              // Class Input Field (Visible only for Students)
-              if (_role == 'Student')
+      body: SingleChildScrollView(
+        // Enables scrolling when content overflows
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Full Name Field
                 TextFormField(
-                  controller: _classController,
-                  decoration: const InputDecoration(
-                      labelText: 'Class Code (e.g., BSEM 1102)'),
+                  controller: _nameController,
+                  decoration: const InputDecoration(labelText: 'Full Name'),
                   validator: (value) {
-                    if (_role == 'Student' &&
-                        (value == null || value.isEmpty)) {
-                      return 'Please enter your class code';
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
                     }
                     return null;
                   },
                 ),
-              const SizedBox(height: 20),
+                const SizedBox(height: 10),
 
-              // Sign Up Button
-              ElevatedButton(
-                onPressed: _register,
-                child: const Text('Sign Up'),
-              ),
-            ],
+                // Email Field
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10),
+
+                // Password Field
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10),
+
+                // Role Dropdown
+                DropdownButtonFormField(
+                  value: _role,
+                  items: const [
+                    DropdownMenuItem(value: 'Student', child: Text('Student')),
+                    DropdownMenuItem(
+                        value: 'Lecturer', child: Text('Lecturer')),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _role = value as String;
+                      if (_role == 'Lecturer') {
+                        _classController
+                            .clear(); // Clear class input for lecturers
+                        _studentIdController
+                            .clear(); // Clear student ID input for lecturers
+                      }
+                    });
+                  },
+                  decoration: const InputDecoration(labelText: 'Role'),
+                ),
+                const SizedBox(height: 10),
+
+                // Class Input Field (Visible only for Students)
+                if (_role == 'Student')
+                  TextFormField(
+                    controller: _classController,
+                    decoration: const InputDecoration(
+                        labelText: 'Class Code (e.g., BSEM 1102)'),
+                    validator: (value) {
+                      if (_role == 'Student' &&
+                          (value == null || value.isEmpty)) {
+                        return 'Please enter your class code';
+                      }
+                      return null;
+                    },
+                  ),
+                const SizedBox(height: 10),
+
+                // Student ID Field (Visible only for Students)
+                if (_role == 'Student')
+                  TextFormField(
+                    controller: _studentIdController,
+                    decoration: const InputDecoration(
+                        labelText: 'Student ID (e.g., 90500XXXX)'),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (_role == 'Student' &&
+                          (value == null || value.isEmpty)) {
+                        return 'Please enter your Student ID';
+                      }
+                      if (_role == 'Student' && value!.length != 9) {
+                        return 'Student ID must be exactly 9 digits';
+                      }
+                      return null;
+                    },
+                  ),
+                const SizedBox(height: 20),
+
+                // Sign Up Button
+                Center(
+                  child: ElevatedButton(
+                    onPressed: _register,
+                    child: const Text('Sign Up'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

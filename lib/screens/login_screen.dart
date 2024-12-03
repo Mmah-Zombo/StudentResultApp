@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (context) => StudentDashboard(
               studentName: user['name'],
               userName: user['name'],
-              studentId: user['id'].toString(),
+              studentId: user['studentId'].toString(),
               studentClass: user['class'], // Replace with actual column
             ),
           ),
