@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:student_result_app/screens/student_list_page.dart';
+import 'package:student_result_app/screens/upload_grades_page.dart';
 
 class StudentManagementPage extends StatelessWidget {
   final String lecturerName; // Lecturer's full name
@@ -138,6 +140,14 @@ class StudentManagementPage extends StatelessWidget {
                   buttonColor: Colors.orange,
                   onPressed: () {
                     // Navigate to See All Students Page
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => StudentListPage(
+                          lecturerName: lecturerName,
+                          lecturerEmail: lecturerEmail,
+                        ),
+                      ),
+                    );
                   },
                 ),
                 _buildDashboardTile(
@@ -148,6 +158,11 @@ class StudentManagementPage extends StatelessWidget {
                   buttonColor: Colors.blue,
                   onPressed: () {
                     // Navigate to Enter Result Page
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const UploadGradesPage(),
+                      ),
+                    );
                   },
                 ),
               ],

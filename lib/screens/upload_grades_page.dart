@@ -61,7 +61,7 @@ class _UploadGradesPageState extends State<UploadGradesPage> {
 
             if (studentId != null && grade != null) {
               // Insert the result into the database
-              await dbHelper.insertResult(studentId, moduleName, grade);
+              await dbHelper.insertResult(studentId, moduleName as int, grade);
             }
           }
           break; // Only process the first sheet
@@ -127,7 +127,7 @@ class _UploadGradesPageState extends State<UploadGradesPage> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
+                    // border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white,
                   ),

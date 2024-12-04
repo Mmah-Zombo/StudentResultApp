@@ -152,6 +152,15 @@ class DatabaseHelper {
     ''', [studentId]);
   }
 
+  Future<List<Map<String, dynamic>>> getAllStudents() async {
+    final db = await database;
+    return await db.query(
+      'users',
+      where: 'role = ?',
+      whereArgs: ['Student'], // Filter rows where role is "Lecturer"
+    );
+  }
+
   Future<double> calculateCGPA(String studentId) async {
     final db = await database;
 
