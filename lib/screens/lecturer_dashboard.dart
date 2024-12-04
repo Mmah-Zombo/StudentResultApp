@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:student_result_app/screens/login_screen.dart';
+import 'package:student_result_app/screens/student_management_dashboard.dart';
 
 class LecturerDashboard extends StatelessWidget {
   final String lecturerName;
@@ -92,7 +93,15 @@ class LecturerDashboard extends StatelessWidget {
                   icon: Icons.supervised_user_circle_outlined,
                   title: "Manage Students",
                   onTap: () {
-                    // Navigate to Manage Students Page
+                    // Navigate to Manage Students Page and pass lecturer data
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => StudentManagementPage(
+                          lecturerName: lecturerName,
+                          lecturerEmail: lecturerEmail,
+                        ),
+                      ),
+                    );
                   },
                 ),
                 _buildDashboardTile(
