@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:student_result_app/screens/add_student_page.dart';
 import 'package:student_result_app/screens/student_list_page.dart';
 import 'package:student_result_app/screens/upload_grades_page.dart';
 
@@ -130,6 +131,8 @@ class StudentManagementPage extends StatelessWidget {
                   buttonColor: Colors.blue,
                   onPressed: () {
                     // Navigate to Add Students Page
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const AddStudentPage()));
                   },
                 ),
                 _buildDashboardTile(

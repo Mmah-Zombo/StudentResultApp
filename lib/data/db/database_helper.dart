@@ -54,7 +54,7 @@ class DatabaseHelper {
           password TEXT,
           role TEXT,
           class TEXT,
-          studentId BIGINT
+          studentId BIGINT UNIQUE
         )
         ''');
         // Create the subjects table
