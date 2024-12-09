@@ -58,10 +58,13 @@ class _StudentResultPageState extends State<StudentResultPage> {
     switch (grade.toUpperCase()) {
       case "A+":
       case "A":
+      case "A-":
         return 4.0;
       case "B+":
-        return 3.5;
+        return 3.7;
       case "B":
+        return 3.5;
+      case "B-":
         return 3.0;
       case "C+":
         return 2.5;
