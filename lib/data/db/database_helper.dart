@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -96,8 +98,12 @@ class DatabaseHelper {
       });
     } catch (e) {
       if (e is DatabaseException && e.isUniqueConstraintError()) {
-        // Email already exists
-        throw Exception('Email already registered!');
+        // Check the specific UNIQUE constraint error
+        if (e.toString().contains('users.email')) {
+          throw Exception('Email already registered!');
+        } else if (e.toString().contains('users.studentId')) {
+          throw Exception('Student ID already exists!');
+        }
       }
       rethrow; // Re-throw other exceptions
     }
@@ -200,5 +206,63 @@ class DatabaseHelper {
     if (subjectCount == 0) return 0.0;
 
     return totalPoints / subjectCount;
+  }
+
+  // Method to delete the database file
+  Future<void> deleteDatabaseFile() async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, 'auth_app.db');
+
+    // Check if the database file exists, and delete it
+    final file = File(path);
+    if (await file.exists()) {
+      await file.delete();
+      print('Database file deleted successfully.');
+    } else {
+      print('No database file found.');
+    }
+  }
+
+  Future<Map<String, dynamic>?> getStudentById(String studentId) async {
+    final db = await database;
+
+    // Query the database for the student with the given studentId
+    final result = await db.query(
+      'users', // Replace 'students' with your actual table name
+      where: 'studentId = ?', // WHERE clause to filter by studentId
+      whereArgs: [studentId], // Provide the studentId as an argument
+    );
+
+    // If a record is found, return it; otherwise, return null
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return null;
+  }
+
+  Future<void> fetchStudentDetails(String studentId) async {
+    final dbHelper = DatabaseHelper();
+
+    // Fetch the student by their ID
+    final student = await dbHelper.getStudentById(studentId);
+
+    if (student != null) {
+      print('Student Name: ${student['name']}');
+      print('Student ID: ${student['studentId']}');
+      print('Class: ${student['class']}');
+    } else {
+      print('No student found with ID $studentId');
+    }
+  }
+
+  Future<int> deleteStudent(String studentId) async {
+    final db = await database;
+
+    // Delete the student with the given studentId
+    return await db.delete(
+      'users', // Replace 'students' with your table name
+      where: 'studentId = ?', // Specify the WHERE clause
+      whereArgs: [studentId], // Pass the studentId as the argument
+    );
   }
 }

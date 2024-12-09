@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:student_result_app/data/db/database_helper.dart';
+import 'package:student_result_app/screens/add_student_page.dart';
+import 'package:student_result_app/screens/student_profile_page.dart';
 
 class StudentListPage extends StatefulWidget {
   final String lecturerName; // Name of the lecturer
@@ -19,6 +21,7 @@ class _StudentListPageState extends State<StudentListPage> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _students = []; // Full list of students
   List<Map<String, dynamic>> _filteredStudents = []; // Filtered list for search
+  final dbHelper = DatabaseHelper();
 
   @override
   void initState() {
@@ -148,6 +151,13 @@ class _StudentListPageState extends State<StudentListPage> {
             child: ElevatedButton(
               onPressed: () {
                 // Navigate to Add Student Page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const AddStudentPage(), // Navigate to AddStudentPage
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
@@ -199,6 +209,31 @@ class _StudentListPageState extends State<StudentListPage> {
         trailing: const Icon(Icons.arrow_forward_ios, color: Colors.grey),
         onTap: () {
           // Handle navigation to student details
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FutureBuilder<Map<String, dynamic>?>(
+                future:
+                    dbHelper.getStudentById(studentId), // Pass the student ID
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError ||
+                      !snapshot.hasData ||
+                      snapshot.data == null) {
+                    return const Center(child: Text("hii"));
+                  } else {
+                    final student = snapshot.data!;
+                    return StudentProfilePage(
+                      studentName: student['name'],
+                      studentId: student['studentId'].toString(),
+                      studentClass: student['class'],
+                    );
+                  }
+                },
+              ),
+            ),
+          );
         },
       ),
     );
