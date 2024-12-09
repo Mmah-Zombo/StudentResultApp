@@ -274,4 +274,42 @@ class DatabaseHelper {
       whereArgs: [studentId],
     );
   }
+
+  Future<void> updateStudentProfile({
+    required String studentId,
+    required String name,
+    required String newStudentId, // Updated studentId
+    required String classCode,
+    String? currentPassword,
+    String? newPassword,
+  }) async {
+    final db = await database;
+
+    // Verify current password if provided
+    if (currentPassword != null && currentPassword.isNotEmpty) {
+      final result = await db.query(
+        'users',
+        where: 'studentId = ? AND password = ?',
+        whereArgs: [studentId, currentPassword],
+      );
+
+      if (result.isEmpty) {
+        throw Exception('Current password is incorrect.');
+      }
+    }
+
+    // Update the student record
+    await db.update(
+      'users',
+      {
+        'name': name,
+        'studentId': newStudentId, // Update studentId
+        'class': classCode,
+        if (newPassword != null && newPassword.isNotEmpty)
+          'password': newPassword,
+      },
+      where: 'studentId = ?',
+      whereArgs: [studentId],
+    );
+  }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:student_result_app/data/db/database_helper.dart';
-import 'package:student_result_app/screens/student_list_page.dart';
 import 'package:student_result_app/screens/student_result_page.dart';
+import 'package:student_result_app/screens/update_student_page.dart';
 
 class StudentProfilePage extends StatelessWidget {
   final String studentName;
@@ -91,6 +91,13 @@ class StudentProfilePage extends StatelessWidget {
                   color: Colors.black,
                   onPressed: () {
                     // Navigate to Edit Profile Page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            UpdateStudentPage(studentId: studentId),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(height: 10),
