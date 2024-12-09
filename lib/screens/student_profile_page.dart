@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:student_result_app/data/db/database_helper.dart';
 import 'package:student_result_app/screens/student_list_page.dart';
+import 'package:student_result_app/screens/student_result_page.dart';
 
 class StudentProfilePage extends StatelessWidget {
   final String studentName;
@@ -26,6 +27,12 @@ class StudentProfilePage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text(
           'Student Profile',
           style: TextStyle(color: Colors.white),
@@ -68,6 +75,13 @@ class StudentProfilePage extends StatelessWidget {
                   color: Colors.black,
                   onPressed: () {
                     // Navigate to Results Page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            StudentResultPage(studentId: studentId),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(height: 10),

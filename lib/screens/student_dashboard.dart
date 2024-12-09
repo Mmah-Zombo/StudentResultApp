@@ -118,45 +118,8 @@ class StudentDashboard extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const StudentResultPage(
-                          cgpa: "3.9", // Replace with actual CGPA from database
-                          subjects: [
-                            {
-                              "title": "Digital Marketing",
-                              "grade": "A+",
-                              "year": "S2024"
-                            },
-                            {
-                              "title": "Design Learning",
-                              "grade": "B",
-                              "year": "S2024"
-                            },
-                            {
-                              "title": "Software Management",
-                              "grade": "B+",
-                              "year": "S2024"
-                            },
-                            {
-                              "title": "Digital Logical Thoughts",
-                              "grade": "C",
-                              "year": "S2024"
-                            },
-                            {
-                              "title": "Artificial Intelligence",
-                              "grade": "F",
-                              "year": "S2024"
-                            },
-                            {
-                              "title": "Physics",
-                              "grade": "A+",
-                              "year": "S2024"
-                            },
-                            {
-                              "title": "Mathematics",
-                              "grade": "C+",
-                              "year": "S2023"
-                            },
-                          ],
+                        builder: (context) => StudentResultPage(
+                          studentId: studentId,
                         ),
                       ),
                     );

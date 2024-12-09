@@ -73,10 +73,9 @@ class DatabaseHelper {
           CREATE TABLE results(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             studentId BIGINT,
-            moduleId INTEGER,
+            moduleName TEXT,
             grade TEXT,
-            FOREIGN KEY (studentId) REFERENCES users(studentId),
-            FOREIGN KEY (moduleId) REFERENCES modules(id)
+            FOREIGN KEY (studentId) REFERENCES users(studentId)
           )
         ''');
       },
@@ -138,11 +137,11 @@ class DatabaseHelper {
 
   // Insert a result
   Future<int> insertResult(
-      String studentId, int subjectId, String grade) async {
+      String studentId, String moduleName, String grade) async {
     final db = await database;
     return await db.insert('results', {
       'studentId': studentId,
-      'subjectId': subjectId,
+      'moduleName': moduleName,
       'grade': grade,
     });
   }
@@ -151,7 +150,7 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getStudentResults(String studentId) async {
     final db = await database;
     return await db.rawQuery('''
-      SELECT subjects.title, subjects.year, results.grade
+      SELECT *
       FROM results
       INNER JOIN subjects ON results.subjectId = subjects.id
       WHERE results.studentId = ?
@@ -263,6 +262,16 @@ class DatabaseHelper {
       'users', // Replace 'students' with your table name
       where: 'studentId = ?', // Specify the WHERE clause
       whereArgs: [studentId], // Pass the studentId as the argument
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getResultsByStudentId(
+      String studentId) async {
+    final db = await database;
+    return await db.query(
+      'results',
+      where: 'studentId = ?',
+      whereArgs: [studentId],
     );
   }
 }

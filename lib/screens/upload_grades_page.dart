@@ -13,6 +13,7 @@ class UploadGradesPage extends StatefulWidget {
 
 class _UploadGradesPageState extends State<UploadGradesPage> {
   final _moduleNameController = TextEditingController();
+  final _classNameController = TextEditingController();
   File? _selectedFile;
   final _formKey = GlobalKey<FormState>();
 
@@ -27,7 +28,6 @@ class _UploadGradesPageState extends State<UploadGradesPage> {
         _selectedFile = File(result.files.single.path!);
       });
     } else {
-      // User canceled the picker
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('No file selected.')),
       );
@@ -49,6 +49,7 @@ class _UploadGradesPageState extends State<UploadGradesPage> {
 
         final dbHelper = DatabaseHelper();
         final moduleName = _moduleNameController.text.trim();
+        final className = _classNameController.text.trim();
 
         // Parse the first sheet of the Excel file
         for (var table in excel.tables.keys) {
@@ -61,7 +62,11 @@ class _UploadGradesPageState extends State<UploadGradesPage> {
 
             if (studentId != null && grade != null) {
               // Insert the result into the database
-              await dbHelper.insertResult(studentId, moduleName as int, grade);
+              await dbHelper.insertResult(
+                studentId,
+                moduleName,
+                grade,
+              );
             }
           }
           break; // Only process the first sheet
@@ -73,6 +78,7 @@ class _UploadGradesPageState extends State<UploadGradesPage> {
 
         // Clear form after successful upload
         _moduleNameController.clear();
+        _classNameController.clear();
         setState(() {
           _selectedFile = null;
         });
@@ -88,7 +94,15 @@ class _UploadGradesPageState extends State<UploadGradesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Enter Students Grades'),
+        title:
+            const Text('Upload Grades', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -98,7 +112,7 @@ class _UploadGradesPageState extends State<UploadGradesPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Enter the name of the class and the Excel file containing the grade of students for that class.",
+                "Enter the module name, class name, and upload the Excel file containing the grades.",
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 20),
@@ -107,13 +121,30 @@ class _UploadGradesPageState extends State<UploadGradesPage> {
               TextFormField(
                 controller: _moduleNameController,
                 decoration: const InputDecoration(
-                  labelText: 'Class Name',
+                  labelText: 'Module Name',
                   filled: true,
                   fillColor: Colors.white,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the module name';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+
+              // Class Name Input
+              TextFormField(
+                controller: _classNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Class Name',
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the class name';
                   }
                   return null;
                 },
@@ -127,7 +158,6 @@ class _UploadGradesPageState extends State<UploadGradesPage> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                   decoration: BoxDecoration(
-                    // border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white,
                   ),
@@ -151,9 +181,19 @@ class _UploadGradesPageState extends State<UploadGradesPage> {
               Center(
                 child: ElevatedButton(
                   onPressed: _uploadGrades,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 15,
+                      horizontal: 30,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                   child: const Text(
                     'Upload Grades',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
               ),
@@ -174,7 +214,7 @@ class _UploadGradesPageState extends State<UploadGradesPage> {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
+            icon: Icon(Icons.upload_file),
             label: "Upload",
           ),
           BottomNavigationBarItem(
