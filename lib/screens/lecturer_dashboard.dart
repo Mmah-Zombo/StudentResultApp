@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:student_result_app/screens/lecturer_profile_page.dart';
 import 'package:student_result_app/screens/login_screen.dart';
-import 'package:student_result_app/screens/student_list_page.dart';
 import 'package:student_result_app/screens/student_management_dashboard.dart';
 
 class LecturerDashboard extends StatelessWidget {

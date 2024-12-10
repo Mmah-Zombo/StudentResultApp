@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:student_result_app/screens/add_student_page.dart';
+import 'package:student_result_app/screens/lecturer_dashboard.dart';
+import 'package:student_result_app/screens/lecturer_profile_page.dart';
 import 'package:student_result_app/screens/student_list_page.dart';
 import 'package:student_result_app/screens/upload_grades_page.dart';
 
@@ -41,31 +43,13 @@ class StudentManagementPage extends StatelessWidget {
           },
         ),
         elevation: 0,
-        title: Row(
+        title: const Row(
           children: [
-            // Circle Avatar with Lecturer's Initials
-            CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 25,
-              child: Text(
-                initials,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
             // Lecturer's Name
             Expanded(
               child: Text(
-                "Hi, $lecturerName",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
-                overflow: TextOverflow.ellipsis, // Handle long names gracefully
+                "S-M Dashboard",
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ],
@@ -73,41 +57,63 @@ class StudentManagementPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Search Bar
+          // Top Profile Section
           Container(
-            color: Colors.black,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+            ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  child: TextField(
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: "Find student by ID",
-                      hintStyle: const TextStyle(color: Colors.white54),
-                      filled: true,
-                      fillColor: Colors.grey[850],
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 20,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
+                // Circle Avatar with initials
+                CircleAvatar(
+                  radius: 35,
+                  backgroundColor: Colors.white,
+                  child: Text(
+                    lecturerName
+                        .split(" ")
+                        .map((e) => e[0])
+                        .join(), // Get initials
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
-                IconButton(
-                  icon: const Icon(Icons.search, color: Colors.white),
-                  onPressed: () {
-                    // Add search logic
-                  },
+                const SizedBox(width: 20),
+                // Name and Email
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      lecturerName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      lecturerEmail,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
+
+          const SizedBox(height: 20),
 
           // Welcome Section
           const Padding(
@@ -182,9 +188,28 @@ class StudentManagementPage extends StatelessWidget {
 
       // Bottom Navigation Bar
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
+        currentIndex: 1,
         onTap: (index) {
           // Handle bottom navigation logic
+          if (index == 0) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => LecturerDashboard(
+                  lecturerName: lecturerName,
+                  lecturerEmail: lecturerEmail,
+                ),
+              ),
+            );
+          } else if (index == 2) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => LecturerProfilePage(
+                  lecturerName: lecturerName,
+                  email: lecturerEmail,
+                ),
+              ),
+            );
+          }
         },
         items: const [
           BottomNavigationBarItem(
@@ -192,8 +217,8 @@ class StudentManagementPage extends StatelessWidget {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
-            label: "Bookmarks",
+            icon: Icon(Icons.dashboard),
+            label: "Dashboard",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
