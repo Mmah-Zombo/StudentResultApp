@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:student_result_app/screens/lecturer_profile_page.dart';
 import 'package:student_result_app/screens/login_screen.dart';
+import 'package:student_result_app/screens/student_list_page.dart';
 import 'package:student_result_app/screens/student_management_dashboard.dart';
 
 class LecturerDashboard extends StatelessWidget {
@@ -104,14 +106,14 @@ class LecturerDashboard extends StatelessWidget {
                     );
                   },
                 ),
-                _buildDashboardTile(
-                  context,
-                  icon: Icons.schedule,
-                  title: "Timetables",
-                  onTap: () {
-                    // Navigate to Timetables Page
-                  },
-                ),
+                // _buildDashboardTile(
+                //   context,
+                //   icon: Icons.schedule,
+                //   title: "Timetables",
+                //   onTap: () {
+                //     // Navigate to Timetables Page
+                //   },
+                // ),
                 _buildDashboardTile(
                   context,
                   icon: Icons.logout,
@@ -132,6 +134,25 @@ class LecturerDashboard extends StatelessWidget {
         currentIndex: 0, // Home is active
         onTap: (index) {
           // Handle navigation logic
+          if (index == 1) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => StudentManagementPage(
+                  lecturerName: lecturerName,
+                  lecturerEmail: lecturerEmail,
+                ),
+              ),
+            );
+          } else if (index == 2) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => LecturerProfilePage(
+                  lecturerName: lecturerName,
+                  email: lecturerEmail,
+                ),
+              ),
+            );
+          }
         },
         items: const [
           BottomNavigationBarItem(
@@ -139,8 +160,8 @@ class LecturerDashboard extends StatelessWidget {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
-            label: "Bookmarks",
+            icon: Icon(Icons.dashboard),
+            label: "Dashboard",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
