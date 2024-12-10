@@ -348,4 +348,32 @@ class DatabaseHelper {
       whereArgs: [email],
     );
   }
+
+  Future<int> deleteLecturer(String email) async {
+    final db = await database;
+
+    // Delete the student with the given studentId
+    return await db.delete(
+      'users', // Replace 'students' with your table name
+      where: 'email = ?', // Specify the WHERE clause
+      whereArgs: [email], // Pass the studentId as the argument
+    );
+  }
+
+  Future<Map<String, dynamic>?> getLecturerByEmail(String email) async {
+    final db = await database;
+
+    // Query the database for the student with the given email
+    final result = await db.query(
+      'users', // Replace 'students' with your actual table name
+      where: 'email = ?', // WHERE clause to filter by email
+      whereArgs: [email], // Provide the studentId as an argument
+    );
+
+    // If a record is found, return it; otherwise, return null
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return null;
+  }
 }

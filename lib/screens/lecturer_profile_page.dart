@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:student_result_app/data/db/database_helper.dart';
+import 'package:student_result_app/screens/login_screen.dart';
 import 'package:student_result_app/screens/update_lecturer_page.dart';
 
 class LecturerProfilePage extends StatelessWidget {
@@ -77,6 +78,16 @@ class LecturerProfilePage extends StatelessWidget {
                         builder: (context) => UpdateLecturerPage(email: email),
                       ),
                     );
+                  },
+                ),
+                const SizedBox(height: 10),
+                _buildActionButton(
+                  context,
+                  label: 'Logout',
+                  color: Colors.black,
+                  onPressed: () async {
+                    // Navigate to Edit Profile Page
+                    await _logout(context);
                   },
                 ),
                 const SizedBox(height: 10),
@@ -165,8 +176,8 @@ class LecturerProfilePage extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Remove Student'),
-          content: const Text('Are you sure you want to remove this student?'),
+          title: const Text('Delete Account'),
+          content: const Text('Are you sure you want to delete your account?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -181,29 +192,30 @@ class LecturerProfilePage extends StatelessWidget {
                 try {
                   // Call the deleteStudent method
                   final rowsDeleted =
-                      await dbHelper.deleteStudent(id.toString());
+                      await dbHelper.deleteLecturer(email.toString());
 
                   if (rowsDeleted > 0) {
                     // Show success message
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content: Text('Student removed successfully.')),
+                          content: Text('Account deleted successfully.')),
                     );
 
                     // Navigate back to the previous page
                     Navigator.of(context).pop(); // Close the dialog
                     Navigator.of(context).pop();
+                    await _logout(context);
                   } else {
                     // Show error message if no student was found
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('No student found with this ID.')),
+                      const SnackBar(content: Text('An error occured!')),
                     );
                   }
                 } catch (e) {
                   // Handle errors
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error removing student: $e')),
+                    const SnackBar(
+                        content: Text('Error deleting your account')),
                   );
                 }
               },
@@ -212,6 +224,18 @@ class LecturerProfilePage extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  // Logout Logic
+  Future<void> _logout(BuildContext context) async {
+    // Add logout logic, such as clearing session data
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              const LoginScreen()), // Replace with actual login screen
+      (route) => false,
     );
   }
 }

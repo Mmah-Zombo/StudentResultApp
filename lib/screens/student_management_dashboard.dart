@@ -31,8 +31,6 @@ class StudentManagementPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initials = _getInitials(lecturerName);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,

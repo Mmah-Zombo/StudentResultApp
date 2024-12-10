@@ -16,8 +16,7 @@ class UpdateLecturerPage extends StatefulWidget {
 class _UpdateLecturerPageState extends State<UpdateLecturerPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _idController = TextEditingController();
-  final _classController = TextEditingController();
+  final _emailController = TextEditingController();
   final _currentPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
 
@@ -26,22 +25,20 @@ class _UpdateLecturerPageState extends State<UpdateLecturerPage> {
   @override
   void initState() {
     super.initState();
-    _loadStudentData();
+    _loadLecturerData();
   }
 
-  Future<void> _loadStudentData() async {
+  Future<void> _loadLecturerData() async {
     try {
-      final student = await _dbHelper.getStudentById(widget.email);
-      if (student != null) {
+      final lecturer = await _dbHelper.getLecturerByEmail(widget.email);
+      if (lecturer != null) {
         setState(() {
-          _nameController.text = student['name'];
-          _idController.text =
-              student['email'].toString(); // Ensure this is String
-          _classController.text = student['class'];
+          _nameController.text = lecturer['name'];
+          _emailController.text = lecturer['email'];
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to load student data')),
+          const SnackBar(content: Text('Failed to load your data')),
         );
       }
     } catch (e) {
@@ -56,14 +53,15 @@ class _UpdateLecturerPageState extends State<UpdateLecturerPage> {
       try {
         await _dbHelper.updateLecturerProfile(
           email: widget.email,
-          newEmail: _idController.text.toString(),
+          newEmail: _emailController.text.toString(),
           name: _nameController.text.trim(),
           currentPassword: _currentPasswordController.text.trim(),
           newPassword: _newPasswordController.text.trim(),
         );
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Student details updated successfully')),
+          const SnackBar(
+              content: Text('Your profile has updated successfully')),
         );
 
         Navigator.of(context).pop();
@@ -145,30 +143,13 @@ class _UpdateLecturerPageState extends State<UpdateLecturerPage> {
 
                       // Student ID Input (Read-Only)
                       TextFormField(
-                        controller: _idController,
+                        controller: _emailController,
                         // readOnly: true,
                         decoration: const InputDecoration(
-                          labelText: 'Student ID',
+                          labelText: 'Email',
                           filled: true,
                           fillColor: Colors.white,
                         ),
-                      ),
-                      const SizedBox(height: 10),
-
-                      // Class Input
-                      TextFormField(
-                        controller: _classController,
-                        decoration: const InputDecoration(
-                          labelText: 'Class',
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the class';
-                          }
-                          return null;
-                        },
                       ),
                       const SizedBox(height: 10),
 
