@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_result_app/screens/login_screen.dart';
-import 'package:student_result_app/screens/student_profile_page.dart';
+import 'package:student_result_app/screens/profile.dart';
 import 'package:student_result_app/screens/student_result_page.dart';
 
 class StudentDashboard extends StatelessWidget {
@@ -173,7 +173,7 @@ class StudentDashboard extends StatelessWidget {
           } else if (index == 2) {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => StudentProfilePage(
+                builder: (context) => Profile(
                   studentName: studentName,
                   studentId: studentId,
                   studentClass: studentClass,

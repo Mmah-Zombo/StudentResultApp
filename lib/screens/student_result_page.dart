@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:student_result_app/data/db/database_helper.dart';
+import 'package:student_result_app/screens/profile.dart';
 import 'package:student_result_app/screens/student_dashboard.dart';
-import 'package:student_result_app/screens/student_profile_page.dart';
 
 class StudentResultPage extends StatefulWidget {
   final String studentId; // Student ID to fetch results
@@ -18,21 +18,25 @@ class StudentResultPage extends StatefulWidget {
 class _StudentResultPageState extends State<StudentResultPage> {
   final DatabaseHelper _dbHelper = DatabaseHelper();
   String _cgpa = "0.0"; // Placeholder for CGPA
-  List<Map<String, dynamic>> _results = []; // Placeholder for student results;
-  Map<String, dynamic>? _student; // Placeholder for student results;
+  List<Map<String, dynamic>> _results = []; // Placeholder for student results
+  Map<String, dynamic>? _student; // Placeholder for student details
 
   @override
   void initState() {
     super.initState();
-    _fetchStudentResults();
+    _fetchStudentResults(); // Fetch data on initialization
   }
 
   Future<void> _fetchStudentResults() async {
     try {
       // Fetch all results for the given student ID
       final results = await _dbHelper.getResultsByStudentId(widget.studentId);
-      final student =
-          await _dbHelper.getStudentById(widget.studentId.toString());
+      final student = await _dbHelper.getStudentById(widget.studentId);
+
+      setState(() {
+        _results = results;
+        _student = student;
+      });
 
       // Calculate CGPA if results are present
       if (results.isNotEmpty) {
@@ -42,19 +46,16 @@ class _StudentResultPageState extends State<StudentResultPage> {
         final cgpa = (totalGrades / results.length).toStringAsFixed(2);
 
         setState(() {
-          _results = results;
           _cgpa = cgpa;
-          _student = student;
         });
       } else {
         setState(() {
-          _results = [];
           _cgpa = "0.0"; // Default CGPA if no results
         });
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
+        SnackBar(content: Text('Error fetching results: $e')),
       );
     }
   }
@@ -144,10 +145,11 @@ class _StudentResultPageState extends State<StudentResultPage> {
                     itemCount: _results.length,
                     itemBuilder: (context, index) {
                       final result = _results[index];
-                      return _buildSubjectCard(context,
-                          title: result['moduleName'], grade: result['grade']
-                          // year: result['className'],
-                          );
+                      return _buildSubjectCard(
+                        context,
+                        title: result['moduleName'],
+                        grade: result['grade'],
+                      );
                     },
                   )
                 : const Center(
@@ -164,24 +166,24 @@ class _StudentResultPageState extends State<StudentResultPage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1, // Highlight "Results" tab
         onTap: (index) {
-          // Handle navigation logic
-          if (index == 0) {
+          if (index == 0 && _student != null) {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => StudentDashboard(
-                    studentId: _student!["studentId"].toString(),
-                    studentName: _student?["name"],
-                    studentClass: _student?["class"],
-                    userName: _student?["name"]),
+                  studentId: _student!["studentId"].toString(),
+                  studentName: _student!["name"],
+                  studentClass: _student!["class"],
+                  userName: _student!["name"],
+                ),
               ),
             );
-          } else if (index == 2) {
+          } else if (index == 2 && _student != null) {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => StudentProfilePage(
+                builder: (context) => Profile(
                   studentId: _student!["studentId"].toString(),
-                  studentName: _student?["name"],
-                  studentClass: _student?["class"],
+                  studentName: _student!["name"],
+                  studentClass: _student!["class"],
                 ),
               ),
             );
@@ -226,27 +228,14 @@ class _StudentResultPageState extends State<StudentResultPage> {
               ),
             ),
             const SizedBox(width: 10),
-            // Grade and Year
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  grade,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.purple,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                // Text(
-                //   year,
-                //   style: const TextStyle(
-                //     fontSize: 14,
-                //     color: Colors.grey,
-                //   ),
-                // ),
-              ],
+            // Grade
+            Text(
+              grade,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.purple,
+              ),
             ),
           ],
         ),
