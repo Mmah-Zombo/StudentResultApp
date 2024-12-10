@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:student_result_app/data/db/database_helper.dart';
+import 'package:student_result_app/screens/student_dashboard.dart';
+import 'package:student_result_app/screens/student_profile_page.dart';
 
 class StudentResultPage extends StatefulWidget {
   final String studentId; // Student ID to fetch results
@@ -16,7 +18,8 @@ class StudentResultPage extends StatefulWidget {
 class _StudentResultPageState extends State<StudentResultPage> {
   final DatabaseHelper _dbHelper = DatabaseHelper();
   String _cgpa = "0.0"; // Placeholder for CGPA
-  List<Map<String, dynamic>> _results = []; // Placeholder for student results
+  List<Map<String, dynamic>> _results = []; // Placeholder for student results;
+  Map<String, dynamic>? _student; // Placeholder for student results;
 
   @override
   void initState() {
@@ -28,6 +31,8 @@ class _StudentResultPageState extends State<StudentResultPage> {
     try {
       // Fetch all results for the given student ID
       final results = await _dbHelper.getResultsByStudentId(widget.studentId);
+      final student =
+          await _dbHelper.getStudentById(widget.studentId.toString());
 
       // Calculate CGPA if results are present
       if (results.isNotEmpty) {
@@ -39,6 +44,7 @@ class _StudentResultPageState extends State<StudentResultPage> {
         setState(() {
           _results = results;
           _cgpa = cgpa;
+          _student = student;
         });
       } else {
         setState(() {
@@ -159,6 +165,27 @@ class _StudentResultPageState extends State<StudentResultPage> {
         currentIndex: 1, // Highlight "Results" tab
         onTap: (index) {
           // Handle navigation logic
+          if (index == 0) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => StudentDashboard(
+                    studentId: _student!["studentId"].toString(),
+                    studentName: _student?["name"],
+                    studentClass: _student?["class"],
+                    userName: _student?["name"]),
+              ),
+            );
+          } else if (index == 2) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => StudentProfilePage(
+                  studentId: _student!["studentId"].toString(),
+                  studentName: _student?["name"],
+                  studentClass: _student?["class"],
+                ),
+              ),
+            );
+          }
         },
         items: const [
           BottomNavigationBarItem(
@@ -166,7 +193,7 @@ class _StudentResultPageState extends State<StudentResultPage> {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
+            icon: Icon(Icons.receipt),
             label: "Results",
           ),
           BottomNavigationBarItem(
