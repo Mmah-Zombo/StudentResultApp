@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_result_app/screens/login_screen.dart';
+import 'package:student_result_app/screens/student_profile_page.dart';
 import 'package:student_result_app/screens/student_result_page.dart';
 
 class StudentDashboard extends StatelessWidget {
@@ -125,22 +126,22 @@ class StudentDashboard extends StatelessWidget {
                     );
                   },
                 ),
-                _buildDashboardTile(
-                  context,
-                  icon: Icons.schedule,
-                  title: "Timetables",
-                  onTap: () {
-                    // Navigate to Timetables Page
-                  },
-                ),
-                _buildDashboardTile(
-                  context,
-                  icon: Icons.attach_money_outlined,
-                  title: "Fees",
-                  onTap: () {
-                    // Navigate to Fees Page
-                  },
-                ),
+                // _buildDashboardTile(
+                //   context,
+                //   icon: Icons.schedule,
+                //   title: "Timetables",
+                //   onTap: () {
+                //     // Navigate to Timetables Page
+                //   },
+                // ),
+                // _buildDashboardTile(
+                //   context,
+                //   icon: Icons.attach_money_outlined,
+                //   title: "Fees",
+                //   onTap: () {
+                //     // Navigate to Fees Page
+                //   },
+                // ),
                 _buildDashboardTile(
                   context,
                   icon: Icons.logout,
@@ -161,6 +162,25 @@ class StudentDashboard extends StatelessWidget {
         currentIndex: 0, // Home is active
         onTap: (index) {
           // Handle navigation if multiple tabs are implemented
+          if (index == 1) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => StudentResultPage(
+                  studentId: studentId,
+                ),
+              ),
+            );
+          } else if (index == 2) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => StudentProfilePage(
+                  studentName: studentName,
+                  studentId: studentId,
+                  studentClass: studentClass,
+                ),
+              ),
+            );
+          }
         },
         items: const [
           BottomNavigationBarItem(
@@ -168,8 +188,8 @@ class StudentDashboard extends StatelessWidget {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
-            label: "Bookmarks",
+            icon: Icon(Icons.receipt),
+            label: "Results",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
