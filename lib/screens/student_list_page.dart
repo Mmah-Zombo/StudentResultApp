@@ -93,7 +93,7 @@ class _StudentListPageState extends State<StudentListPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
-                  radius: 50,
+                  radius: 40,
                   backgroundColor: Colors.white,
                   child: Text(
                     widget.lecturerName
