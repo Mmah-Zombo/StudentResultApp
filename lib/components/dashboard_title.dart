@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-Widget DashboardTile(
-  BuildContext context, {
-  required IconData icon,
-  required String title,
-  required VoidCallback onTap,
-}) {
+Widget DashboardTile(BuildContext context,
+    {required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    buttonText,
+    buttonColor}) {
   return GestureDetector(
     onTap: onTap,
     child: Card(
@@ -24,7 +24,20 @@ Widget DashboardTile(
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const Spacer(),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black),
+            buttonText != null
+                ? ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: buttonColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: onTap,
+                    child: Text(buttonText,
+                        style: const TextStyle(color: Colors.white)),
+                  )
+                : const Icon(Icons.arrow_forward_ios,
+                    size: 16, color: Colors.black),
           ],
         ),
       ),

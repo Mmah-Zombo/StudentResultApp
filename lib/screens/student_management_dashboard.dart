@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:student_result_app/components/dashboard_title.dart';
 import 'package:student_result_app/screens/add_student_page.dart';
 import 'package:student_result_app/screens/lecturer_dashboard.dart';
 import 'package:student_result_app/screens/lecturer_profile_page.dart';
@@ -16,211 +17,235 @@ class StudentManagementPage extends StatelessWidget {
   }) : super(key: key);
 
   // Helper function to get the initials of the lecturer's name
-  String _getInitials(String name) {
-    final words = name.split(' ');
-    String initials = '';
-    for (var word in words) {
-      if (word.isNotEmpty) {
-        initials += word[0].toUpperCase(); // Take the first letter of each word
-      }
-    }
-    return initials.length > 2
-        ? initials.substring(0, 2)
-        : initials; // Limit to 2 letters
-  }
+  // String _getInitials(String name) {
+  //   final words = name.split(' ');
+  //   String initials = '';
+  //   for (var word in words) {
+  //     if (word.isNotEmpty) {
+  //       initials += word[0].toUpperCase(); // Take the first letter of each word
+  //     }
+  //   }
+  //   return initials.length > 2
+  //       ? initials.substring(0, 2)
+  //       : initials; // Limit to 2 letters
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        elevation: 0,
-        title: const Row(
+      backgroundColor: Colors.white,
+      body: Stack(children: [
+        Column(
           children: [
-            // Lecturer's Name
+            // Top Profile Section
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 70, horizontal: 16),
+              decoration: const BoxDecoration(
+                color: Colors.black, // Fallback color in case the image fails
+                image: DecorationImage(
+                  image: AssetImage(
+                      'assets/images/bg-image.png'), // Background image path
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.white,
+                    child: Text(
+                      lecturerName
+                          .split(" ")
+                          .map((e) => e[0])
+                          .join(), // Get initials
+                      style: const TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        lecturerName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        lecturerEmail,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Welcome Section
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Welcome",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+
+            // Dashboard Options
             Expanded(
-              child: Text(
-                "S-M Dashboard",
-                style: TextStyle(color: Colors.white),
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                children: [
+                  DashboardTile(
+                    context,
+                    icon: Icons.person_add_alt_1,
+                    title: "Add Students",
+                    buttonText: "ADD",
+                    buttonColor: Colors.blue,
+                    onTap: () {
+                      // Navigate to Add Students Page
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const AddStudentPage()));
+                    },
+                  ),
+                  DashboardTile(
+                    context,
+                    icon: Icons.visibility_outlined,
+                    title: "See All Students",
+                    buttonText: "VIEW",
+                    buttonColor: Colors.orange,
+                    onTap: () {
+                      // Navigate to See All Students Page
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => StudentListPage(
+                            lecturerName: lecturerName,
+                            lecturerEmail: lecturerEmail,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  DashboardTile(
+                    context,
+                    icon: Icons.menu_book,
+                    title: "Enter Result",
+                    buttonText: "ENTER",
+                    buttonColor: Colors.blue,
+                    onTap: () {
+                      // Navigate to Enter Result Page
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const UploadGradesPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ],
         ),
-      ),
-      body: Column(
-        children: [
-          // Top Profile Section
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Circle Avatar with initials
-                CircleAvatar(
-                  radius: 35,
-                  backgroundColor: Colors.white,
-                  child: Text(
-                    lecturerName
-                        .split(" ")
-                        .map((e) => e[0])
-                        .join(), // Get initials
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 20),
-                // Name and Email
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      lecturerName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      lecturerEmail,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+        Positioned(
+          top: 16, // Adjust position above the BottomNavigationBar
+          left: 16,
+          child: Image.asset(
+            'assets/images/Limkokwing_Large_Banner_Logo.jpg', // Path to your logo image
+            width: 120, // Adjust the size of the logo
+            height: 100,
           ),
-
-          const SizedBox(height: 20),
-
-          // Welcome Section
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Welcome",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-
-          // Dashboard Options
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                _buildDashboardTile(
-                  context,
-                  icon: Icons.person_add_alt_1,
-                  title: "Add Students",
-                  buttonText: "ADD",
-                  buttonColor: Colors.blue,
-                  onPressed: () {
-                    // Navigate to Add Students Page
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const AddStudentPage()));
-                  },
-                ),
-                _buildDashboardTile(
-                  context,
-                  icon: Icons.visibility_outlined,
-                  title: "See All Students",
-                  buttonText: "VIEW",
-                  buttonColor: Colors.orange,
-                  onPressed: () {
-                    // Navigate to See All Students Page
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => StudentListPage(
-                          lecturerName: lecturerName,
-                          lecturerEmail: lecturerEmail,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                _buildDashboardTile(
-                  context,
-                  icon: Icons.menu_book,
-                  title: "Enter Result",
-                  buttonText: "ENTER",
-                  buttonColor: Colors.blue,
-                  onPressed: () {
-                    // Navigate to Enter Result Page
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const UploadGradesPage(),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+      ]),
 
       // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1,
-        onTap: (index) {
-          // Handle bottom navigation logic
-          if (index == 0) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => LecturerDashboard(
-                  lecturerName: lecturerName,
-                  lecturerEmail: lecturerEmail,
+      // Bottom Navigation Bar
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Shadow Container
+          Container(
+            height: 10, // Height of the shadow space
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2), // Shadow color
+                  offset: const Offset(0, 10), // Offset upward
+                  blurRadius: 8, // Shadow blur
                 ),
-              ),
-            );
-          } else if (index == 2) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => LecturerProfilePage(
-                  lecturerName: lecturerName,
-                  email: lecturerEmail,
+              ],
+            ),
+          ),
+          // Actual BottomNavigationBar
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            child: BottomNavigationBar(
+              backgroundColor: Colors.white,
+              iconSize: 35,
+              fixedColor: Colors.black,
+              currentIndex: 1,
+              onTap: (index) {
+                if (index == 0) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => LecturerDashboard(
+                        lecturerName: lecturerName,
+                        lecturerEmail: lecturerEmail,
+                      ),
+                    ),
+                  );
+                } else if (index == 2) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => LecturerProfilePage(
+                        lecturerName: lecturerName,
+                        email: lecturerEmail,
+                      ),
+                    ),
+                  );
+                }
+              },
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: "Home",
                 ),
-              ),
-            );
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: "Dashboard",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profile",
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.dashboard_rounded),
+                  label: "Dashboard",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  label: "Profile",
+                ),
+              ],
+            ),
           ),
         ],
       ),
