@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:student_result_app/components/dashboard_title.dart';
 import 'package:student_result_app/screens/lecturer_profile_page.dart';
 import 'package:student_result_app/screens/login_screen.dart';
 import 'package:student_result_app/screens/student_management_dashboard.dart';
@@ -16,201 +17,196 @@ class LecturerDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        title: const Text(
-          'Lecturer Dashboard',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: Column(
+      backgroundColor: Colors.white,
+      body: Stack(
         children: [
-          // Top Profile Section
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Circle Avatar with initials
-                CircleAvatar(
-                  radius: 35,
-                  backgroundColor: Colors.white,
-                  child: Text(
-                    lecturerName
-                        .split(" ")
-                        .map((e) => e[0])
-                        .join(), // Get initials
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+          Column(
+            children: [
+              // Top Profile Section
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 70, horizontal: 16),
+                decoration: const BoxDecoration(
+                  color: Colors.black, // Fallback color in case the image fails
+                  image: DecorationImage(
+                    image: AssetImage(
+                        'assets/images/bg-image.png'), // Background image path
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
                   ),
                 ),
-                const SizedBox(width: 20),
-                // Name and Email
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      lecturerName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.white,
+                      child: Text(
+                        lecturerName
+                            .split(" ")
+                            .map((e) => e[0])
+                            .join(), // Get initials
+                        style: const TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 5),
-                    Text(
-                      lecturerEmail,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+                    const SizedBox(height: 20),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          lecturerName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          lecturerEmail,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Dashboard Menu Buttons
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  children: [
+                    DashboardTile(
+                      context,
+                      icon: Icons.groups_outlined,
+                      title: "Manage Students",
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => StudentManagementPage(
+                              lecturerName: lecturerName,
+                              lecturerEmail: lecturerEmail,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    DashboardTile(
+                      context,
+                      icon: Icons.logout,
+                      title: "Logout",
+                      onTap: () async {
+                        await _logout(context);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
 
-          const SizedBox(height: 20),
-
-          // Dashboard Menu Buttons
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                _buildDashboardTile(
-                  context,
-                  icon: Icons.supervised_user_circle_outlined,
-                  title: "Manage Students",
-                  onTap: () {
-                    // Navigate to Manage Students Page and pass lecturer data
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => StudentManagementPage(
-                          lecturerName: lecturerName,
-                          lecturerEmail: lecturerEmail,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                // _buildDashboardTile(
-                //   context,
-                //   icon: Icons.schedule,
-                //   title: "Timetables",
-                //   onTap: () {
-                //     // Navigate to Timetables Page
-                //   },
-                // ),
-                _buildDashboardTile(
-                  context,
-                  icon: Icons.logout,
-                  title: "Logout",
-                  onTap: () async {
-                    // Call logout logic
-                    await _logout(context);
-                  },
-                ),
-              ],
+          // Bottom-left Logo
+          Positioned(
+            top: 16, // Adjust position above the BottomNavigationBar
+            left: 16,
+            child: Image.asset(
+              'assets/images/Limkokwing_Large_Banner_Logo.jpg', // Path to your logo image
+              width: 120, // Adjust the size of the logo
+              height: 100,
             ),
           ),
         ],
       ),
 
       // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0, // Home is active
-        onTap: (index) {
-          // Handle navigation logic
-          if (index == 1) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => StudentManagementPage(
-                  lecturerName: lecturerName,
-                  lecturerEmail: lecturerEmail,
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Shadow Container
+          Container(
+            height: 10, // Height of the shadow space
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2), // Shadow color
+                  offset: const Offset(0, 10), // Offset upward
+                  blurRadius: 8, // Shadow blur
                 ),
-              ),
-            );
-          } else if (index == 2) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => LecturerProfilePage(
-                  lecturerName: lecturerName,
-                  email: lecturerEmail,
+              ],
+            ),
+          ),
+          // Actual BottomNavigationBar
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            child: BottomNavigationBar(
+              backgroundColor: Colors.white,
+              iconSize: 35,
+              fixedColor: Colors.black,
+              currentIndex: 0,
+              onTap: (index) {
+                if (index == 1) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => StudentManagementPage(
+                        lecturerName: lecturerName,
+                        lecturerEmail: lecturerEmail,
+                      ),
+                    ),
+                  );
+                } else if (index == 2) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => LecturerProfilePage(
+                        lecturerName: lecturerName,
+                        email: lecturerEmail,
+                      ),
+                    ),
+                  );
+                }
+              },
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: "Home",
                 ),
-              ),
-            );
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: "Dashboard",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profile",
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.dashboard_rounded),
+                  label: "Dashboard",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  label: "Profile",
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  // Dashboard Tile Widget
-  Widget _buildDashboardTile(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Icon(icon, size: 30, color: Colors.blue),
-              const SizedBox(width: 20),
-              Text(
-                title,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const Spacer(),
-              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Logout Logic
   Future<void> _logout(BuildContext context) async {
-    // Add logout logic, such as clearing session data
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(
-          builder: (context) =>
-              const LoginScreen()), // Replace with actual login screen
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
       (route) => false,
     );
   }

@@ -68,6 +68,7 @@ flutter:
     - assets/images/Limkokwing_Large_Banner_Logo.jpg
     - assets/images/student.png
     - assets/images/studying-student.png
+    - assets/images/bg-image.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
