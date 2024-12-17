@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:student_result_app/components/student_card.dart';
 import 'package:student_result_app/data/db/database_helper.dart';
 import 'package:student_result_app/screens/add_student_page.dart';
-import 'package:student_result_app/screens/student_profile_page.dart';
 
 class StudentListPage extends StatefulWidget {
   final String lecturerName; // Name of the lecturer
@@ -57,6 +57,7 @@ class _StudentListPageState extends State<StudentListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.black,
         leading: IconButton(
@@ -75,34 +76,59 @@ class _StudentListPageState extends State<StudentListPage> {
           // Profile Section
           Container(
             padding: const EdgeInsets.all(16),
-            color: Colors.black,
-            child: Row(
+            decoration: const BoxDecoration(
+              color: Colors.black, // Fallback color in case the image fails
+              image: DecorationImage(
+                image: AssetImage(
+                    'assets/images/bg-image.png'), // Background image path
+                fit: BoxFit.cover,
+              ),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircleAvatar(
+                  radius: 50,
                   backgroundColor: Colors.white,
-                  radius: 25,
                   child: Text(
                     widget.lecturerName
                         .split(" ")
                         .map((e) => e[0])
-                        .join(), // Lecturer initials
+                        .join(), // Get initials
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 40,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    "Hi, ${widget.lecturerName}",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
+                const SizedBox(height: 20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.lecturerName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                    const SizedBox(height: 2),
+                    Text(
+                      widget.lecturerEmail,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -135,11 +161,12 @@ class _StudentListPageState extends State<StudentListPage> {
                     itemCount: _filteredStudents.length,
                     itemBuilder: (context, index) {
                       final student = _filteredStudents[index];
-                      return _buildStudentCard(
-                        student['name'],
-                        student['studentId'] != null
+                      return StudentCard(
+                        name: student['name'],
+                        studentId: student['studentId'] != null
                             ? student['studentId'].toString()
                             : 'N/A',
+                        getStudentById: dbHelper.getStudentById,
                       );
                     },
                   )
@@ -168,9 +195,10 @@ class _StudentListPageState extends State<StudentListPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                padding: const EdgeInsets.all(16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 70),
               ),
               child: const Text(
                 "Add Student",
@@ -179,46 +207,6 @@ class _StudentListPageState extends State<StudentListPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildStudentCard(String name, String studentId) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: ListTile(
-        title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(studentId),
-        trailing: const Icon(Icons.arrow_forward_ios, color: Colors.grey),
-        onTap: () {
-          // Handle navigation to student details
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FutureBuilder<Map<String, dynamic>?>(
-                future:
-                    dbHelper.getStudentById(studentId), // Pass the student ID
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError ||
-                      !snapshot.hasData ||
-                      snapshot.data == null) {
-                    return const Center(child: Text("hii"));
-                  } else {
-                    final student = snapshot.data!;
-                    return StudentProfilePage(
-                      studentName: student['name'],
-                      studentId: student['studentId'].toString(),
-                      studentClass: student['class'],
-                    );
-                  }
-                },
-              ),
-            ),
-          );
-        },
       ),
     );
   }
