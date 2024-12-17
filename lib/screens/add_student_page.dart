@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:student_result_app/components/text_input_field.dart';
 import 'package:student_result_app/data/db/database_helper.dart';
 
 class AddStudentPage extends StatefulWidget {
@@ -63,19 +64,25 @@ class _AddStudentPageState extends State<AddStudentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('Add New Student'),
+          backgroundColor: Colors.white,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
             child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 25),
               children: [
+                Image.asset('assets/images/Limkokwing_Large_Banner_Logo.jpg',
+                    height: 90),
+                const SizedBox(height: 20),
                 // Student Name
-                TextFormField(
+                CustomTextInputField(
                   controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Student Name'),
+                  label: 'Student Name',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the student\'s name';
@@ -86,9 +93,9 @@ class _AddStudentPageState extends State<AddStudentPage> {
                 const SizedBox(height: 10),
 
                 // Student ID
-                TextFormField(
+                CustomTextInputField(
                   controller: _studentIdController,
-                  decoration: const InputDecoration(labelText: 'Student ID'),
+                  label: 'Student ID',
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -103,9 +110,9 @@ class _AddStudentPageState extends State<AddStudentPage> {
                 const SizedBox(height: 10),
 
                 // Email
-                TextFormField(
+                CustomTextInputField(
                   controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
+                  label: 'Email',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
@@ -119,9 +126,9 @@ class _AddStudentPageState extends State<AddStudentPage> {
                 const SizedBox(height: 10),
 
                 // Class
-                TextFormField(
+                CustomTextInputField(
                   controller: _classController,
-                  decoration: const InputDecoration(labelText: 'Class'),
+                  label: 'Class',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the class';
@@ -132,10 +139,10 @@ class _AddStudentPageState extends State<AddStudentPage> {
                 const SizedBox(height: 10),
 
                 // Passcode
-                TextFormField(
+                CustomTextInputField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(labelText: 'Password'),
-                  obscureText: true,
+                  label: 'Password',
+                  isPassword: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a password';
@@ -149,11 +156,10 @@ class _AddStudentPageState extends State<AddStudentPage> {
                 const SizedBox(height: 10),
 
                 // Confirm Passcode
-                TextFormField(
+                CustomTextInputField(
                   controller: _confirmPasswordController,
-                  decoration:
-                      const InputDecoration(labelText: 'Confirm Password'),
-                  obscureText: true,
+                  label: 'Confirm Password',
+                  isPassword: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please confirm the passcode';
@@ -170,9 +176,10 @@ class _AddStudentPageState extends State<AddStudentPage> {
                 ElevatedButton(
                   onPressed: _addStudent,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
+                      backgroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0))),
                   child: const Text(
                     'Add Student',
                     style: TextStyle(color: Colors.white),
