@@ -182,7 +182,10 @@ class _AddStudentPageState extends State<AddStudentPage> {
                           borderRadius: BorderRadius.circular(12.0))),
                   child: const Text(
                     'Add Student',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
