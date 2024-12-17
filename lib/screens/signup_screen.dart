@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:student_result_app/components/text_input_field.dart';
 import 'package:student_result_app/data/db/database_helper.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -63,7 +64,9 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign Up')),
+      backgroundColor: Colors.white,
+      appBar:
+          AppBar(title: const Text('Sign Up'), backgroundColor: Colors.white),
       body: SingleChildScrollView(
         // Enables scrolling when content overflows
         child: Padding(
@@ -73,10 +76,25 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                //  Logo
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Image.asset(
+                        'assets/images/Limkokwing_Large_Banner_Logo.jpg',
+                        height: 90),
+                    const SizedBox(height: 10),
+                    Image.asset('assets/images/studying-student.png',
+                        height: 300),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
                 // Full Name Field
-                TextFormField(
+                CustomTextInputField(
                   controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Full Name'),
+                  label: 'Full Name',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your name';
@@ -87,9 +105,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(height: 10),
 
                 // Email Field
-                TextFormField(
+                CustomTextInputField(
                   controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
+                  label: 'Email',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
@@ -103,10 +121,10 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(height: 10),
 
                 // Password Field
-                TextFormField(
+                CustomTextInputField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(labelText: 'Password'),
-                  obscureText: true,
+                  label: 'Password',
+                  isPassword: true,
                   validator: (value) {
                     if (value == null || value.length < 6) {
                       return 'Password must be at least 6 characters';
@@ -135,16 +153,53 @@ class _SignupScreenState extends State<SignupScreen> {
                       }
                     });
                   },
-                  decoration: const InputDecoration(labelText: 'Role'),
+                  dropdownColor: const Color.fromARGB(255, 255, 255, 255),
+                  decoration: InputDecoration(
+                    labelText: 'Role',
+                    filled: true,
+                    fillColor: const Color.fromARGB(255, 241, 241, 241),
+                    floatingLabelStyle: const TextStyle(
+                      backgroundColor: Color.fromARGB(255, 241, 241, 241),
+                      color: Colors.black, // Prevent color change on focus
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(255, 241, 241, 241),
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(255, 51, 51, 51),
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(255, 199, 57, 57),
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(255, 199, 57, 57),
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
                 ),
+
                 const SizedBox(height: 10),
 
                 // Class Input Field (Visible only for Students)
                 if (_role == 'Student')
-                  TextFormField(
+                  CustomTextInputField(
                     controller: _classController,
-                    decoration: const InputDecoration(
-                        labelText: 'Class Code (e.g., BSEM 1102)'),
+                    label: 'Class Code (e.g., BSEM 1102)',
                     validator: (value) {
                       if (_role == 'Student' &&
                           (value == null || value.isEmpty)) {
@@ -157,10 +212,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 // Student ID Field (Visible only for Students)
                 if (_role == 'Student')
-                  TextFormField(
+                  CustomTextInputField(
                     controller: _studentIdController,
-                    decoration: const InputDecoration(
-                        labelText: 'Student ID (e.g., 90500XXXX)'),
+                    label: 'Student ID (e.g., 90500XXXX)',
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (_role == 'Student' &&
@@ -178,10 +232,20 @@ class _SignupScreenState extends State<SignupScreen> {
                 // Sign Up Button
                 Center(
                   child: ElevatedButton(
-                    onPressed: _register,
-                    child: const Text('Sign Up'),
-                  ),
+                      onPressed: _register,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(12.0), // Rounded corners
+                        ),
+                        backgroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 120, vertical: 15.0),
+                      ),
+                      child: const Text('Sign Up',
+                          style: TextStyle(color: Colors.white))),
                 ),
+                const SizedBox(height: 20),
               ],
             ),
           ),

@@ -5,6 +5,7 @@ class CustomTextInputField extends StatelessWidget {
   final String label;
   final bool isPassword;
   final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
 
   const CustomTextInputField({
     super.key,
@@ -12,6 +13,7 @@ class CustomTextInputField extends StatelessWidget {
     required this.label,
     this.isPassword = false,
     this.validator,
+    this.keyboardType,
   });
 
   @override
