@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:student_result_app/components/text_input_field.dart';
 import 'package:student_result_app/data/db/database_helper.dart'; // Import the DatabaseHelper
 import 'package:student_result_app/screens/lecturer_dashboard.dart';
 import 'package:student_result_app/screens/signup_screen.dart';
@@ -86,48 +87,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 10),
                       Image.asset('assets/images/student.png', height: 300),
                       const SizedBox(height: 10),
-                      TextFormField(
+                      CustomTextInputField(
                         controller: _emailController,
-                        decoration: InputDecoration(
-                            label: const Text(
-                              "Email",
-                              style: TextStyle(
-                                backgroundColor:
-                                    Color.fromARGB(255, 241, 241, 241),
-                              ),
-                            ),
-                            floatingLabelStyle: const TextStyle(
-                              backgroundColor:
-                                  Color.fromARGB(255, 241, 241, 241),
-                              color:
-                                  Colors.black, // Prevent color change on focus
-                            ),
-                            filled: true,
-                            fillColor: const Color.fromARGB(255, 241, 241, 241),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 241, 241, 241),
-                                  width: 1.0),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 51, 51, 51),
-                                  width: 1.0),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 199, 57, 57),
-                                  width: 1.0),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 199, 57, 57),
-                                  width: 1.0),
-                              borderRadius: BorderRadius.circular(12.0),
-                            )),
+                        label: "email",
+                        isPassword: false,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your email';
@@ -136,49 +99,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       const SizedBox(height: 10),
-                      TextFormField(
+                      CustomTextInputField(
                         controller: _passwordController,
-                        decoration: InputDecoration(
-                            label: const Text(
-                              "Password",
-                              style: TextStyle(
-                                backgroundColor:
-                                    Color.fromARGB(255, 241, 241, 241),
-                              ),
-                            ),
-                            floatingLabelStyle: const TextStyle(
-                              backgroundColor:
-                                  Color.fromARGB(255, 241, 241, 241),
-                              color:
-                                  Colors.black, // Prevent color change on focus
-                            ),
-                            filled: true,
-                            fillColor: const Color.fromARGB(255, 241, 241, 241),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 241, 241, 241),
-                                  width: 1.0),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 51, 51, 51),
-                                  width: 1.0),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 199, 57, 57),
-                                  width: 1.0),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 199, 57, 57),
-                                  width: 1.0),
-                              borderRadius: BorderRadius.circular(12.0),
-                            )),
-                        obscureText: true,
+                        label: "Password",
+                        isPassword: true,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
