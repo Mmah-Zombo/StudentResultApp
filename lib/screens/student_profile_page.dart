@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:student_result_app/data/db/database_helper.dart';
-import 'package:student_result_app/screens/student_result_page.dart';
+import 'package:student_result_app/screens/result_page.dart';
 import 'package:student_result_app/screens/update_student_page.dart';
 
 class StudentProfilePage extends StatelessWidget {
@@ -78,8 +78,7 @@ class StudentProfilePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            StudentResultPage(studentId: studentId),
+                        builder: (context) => ResultPage(studentId: studentId),
                       ),
                     );
                   },
